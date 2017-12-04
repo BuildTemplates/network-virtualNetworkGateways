@@ -1,0 +1,59 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "2017.09.01.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource that is unique within a resource group. This name can be used to access the resource."
+      }
+    },
+    "privateIPAllocationMethod": {
+      "type": "string",
+      "allowedValues": [
+        "Dynamic",
+        "Static"
+      ],
+      "metadata": {
+        "description": "The private IP allocation method. Possible values are: 'Static' and 'Dynamic'."
+      }
+    },
+    "publicIPAddressId": {
+      "type": "string",
+      "metadata": {
+        "description": "The reference of the public IP resource."
+      }
+    },
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "The reference of the subnet resource."
+      }
+    }
+  },
+  "variables": {
+    "comment": {
+      "documentation": "https://docs.microsoft.com/en-us/rest/api/network-gateway/virtualnetworkgateways/createorupdate#definitions_virtualnetworkgatewayipconfiguration"
+    },
+    "ipConfigurations": {
+      "name": "[parameters('name')]",
+      "properties": {
+        "privateIPAllocationMethod": "[parameters('privateIPAllocationMethod')]",
+        "subnet": {
+          "id": "[parameters('subnetId')]"
+        },
+        "publicIpAddress": {
+          "id": "[parameters('publicIPAddressId')]"
+        }
+      }
+    }
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "ipConfiguration": {
+      "type": "object",
+      "value": "[variables('ipConfigurations')]"
+    }
+  }
+}

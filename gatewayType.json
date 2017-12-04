@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "2017.09.01.0",
+  "parameters": {
+    "VirtualNetworkGatewayType": {
+      "type": "string",
+      "allowedValues": [
+        "ExpressRoute",
+        "Vpn"
+      ],
+      "metadata": {
+        "description": "The type of this virtual network gateway. Possible values are: 'Vpn' and 'ExpressRoute'."
+      }
+    }
+  },
+  "variables": {
+    "comment": {
+      "documentation": "https://docs.microsoft.com/en-us/rest/api/network-gateway/virtualnetworkgateways/createorupdate#definitions_virtualnetworkgatewaytype"
+    },
+    "gatewayType": {
+      "gatewayType": "[parameters('VirtualNetworkGatewayType')]"
+    }
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "gatewayType": {
+      "type": "object",
+      "value": "[variables('gatewayType')]"
+    }
+  }
+}

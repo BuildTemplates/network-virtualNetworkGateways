@@ -1,0 +1,68 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "2017.09.01.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "allowedValues": [
+        "Basic",
+        "HighPerformance",
+        "Standard",
+        "UltraPerformance",
+        "VpnGw1",
+        "VpnGw2",
+        "VpnGw3"
+      ],
+      "metadata": {
+        "description": "Gateway SKU name."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "allowedValues": [
+        "Basic",
+        "HighPerformance",
+        "Standard",
+        "UltraPerformance",
+        "VpnGw1",
+        "VpnGw2",
+        "VpnGw3"
+      ],
+      "metadata": {
+        "description": "Gateway SKU tier."
+      }
+    },
+    "capactiy": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "The capacity."
+      }
+    }
+  },
+  "variables": {
+    "comment": {
+      "documentation": "https://docs.microsoft.com/en-us/rest/api/network-gateway/virtualnetworkgateways/createorupdate#definitions_virtualnetworkgatewayipconfiguration"
+    },
+    "skus": [
+      {
+        "name": "[parameters('name')]",
+        "tier": "[parameters('tier')]",
+        "capacity": "[parameters('capactiy')]"
+      },
+      {
+        "name": "[parameters('name')]",
+        "tier": "[parameters('tier')]"
+      }
+    ],
+    "virtualNetworkGatewaySku": "[if(equals(parameters('capactiy'),0),variables('skus')[1],variables('skus')[0])]"
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "virtualNetworkGatewaySku": {
+      "type": "object",
+      "value": "[variables('virtualNetworkGatewaySku')]"
+    }
+  }
+}

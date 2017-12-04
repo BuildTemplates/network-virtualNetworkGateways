@@ -1,0 +1,113 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "2017.09.01.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource name."
+      }
+    },
+    "activeActive": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "ActiveActive flag"
+      }
+    },
+    "bgpSettings": {
+      "type": "object",
+      "defaultValue": null,
+      "metadata": {
+        "description": "Virtual network gateway's BGP speaker settings."
+      }
+    },
+    "enableBgp": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Whether BGP is enabled for this virtual network gateway or not."
+      }
+    },
+    "gatewayType": {
+      "type": "string",
+      "allowedValues": [
+        "ExpressRoute",
+        "Vpn"
+      ],
+      "metadata": {
+        "description": "The type of this virtual network gateway. Possible values are: 'Vpn' and 'ExpressRoute'."
+      }
+    },
+    "ipConfigurations": {
+      "type": "array",
+      "metadata": {
+        "description": "IP configurations for virtual network gateway."
+      }
+    },
+    "vpnType": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "PolicyBased",
+        "RouteBased"
+      ],
+      "metadata": {
+        "description": "The type of this virtual network gateway. Possible values are: 'PolicyBased' and 'RouteBased'."
+      }
+    },
+    "sku": {
+      "type": "object",
+      "metadata": {
+        "description": "The reference of the VirtualNetworkGatewaySku resource which represents the SKU selected for Virtual network gateway."
+      }
+    }
+  },
+  "variables": {
+    "comment": {
+      "documentation": "https://docs.microsoft.com/en-us/rest/api/network-gateway/virtualnetworkgateways/createorupdate#definitions_virtualnetworkgatewayipconfiguration"
+    },
+    "propertiesNoBgp": [
+      {
+        "gatewayType": "[parameters('gatewayType')]",
+        "ipConfigurations": "[parameters('ipConfigurations')]",
+        "sku": "[parameters('sku')]"
+      },
+      {
+        "activeActive": "[parameters('activeActive')]",
+        "gatewayType": "[parameters('gatewayType')]",
+        "ipConfigurations": "[parameters('ipConfigurations')]",
+        "vpnType": "[parameters('vpnType')]",
+        "sku": "[parameters('sku')]"
+      }
+    ],
+    "propertiesBGP": {
+      "activeActive": "[parameters('activeActive')]",
+      "gatewayType": "[parameters('gatewayType')]",
+      "ipConfigurations": "[parameters('ipConfigurations')]",
+      "enableBgp": "[parameters('enableBgp')]",
+      "bgpSettings": "[parameters('bgpSettings')]",
+      "vpnType": "[parameters('vpnType')]",
+      "sku": "[parameters('sku')]"
+    },
+    "noBgp": "[or(equals(parameters('gatewayType'),'ExpressRoute'),equals(parameters('vpnType'),'PolicyBased'))]",
+    "properties": "[if(variables('noBgp'),if(equals(parameters('gatewayType'),'ExpressRoute'),variables('propertiesNoBgp')[0],variables('propertiesNoBgp')[1]),variables('propertiesBGP'))]",
+    "virtualNetworkGateway": {
+      "apiVersion": "2017-09-01",
+      "name": "[parameters('name')]",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [ ],
+      "properties": "[variables('properties')]"
+    }
+  },
+  "resources": [
+  ],
+  "outputs": {
+    "virtualNetworkGateway": {
+      "type": "object",
+      "value": "[variables('virtualNetworkGateway')]"
+    }
+  }
+}
