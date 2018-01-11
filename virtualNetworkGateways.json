@@ -100,7 +100,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [ ],
       "properties": "[variables('properties')]"
-    },
+    }
   },
   "resources": [
     {
