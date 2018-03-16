@@ -62,6 +62,13 @@
       "metadata": {
         "description": "The reference of the VirtualNetworkGatewaySku resource which represents the SKU selected for Virtual network gateway."
       }
+    },
+    "DependsOn": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Pass dependencies"
+      }
     }
   },
   "variables": {
@@ -98,7 +105,7 @@
       "name": "[parameters('name')]",
       "type": "Microsoft.Network/virtualNetworkGateways",
       "location": "[resourceGroup().location]",
-      "dependsOn": [ ],
+      "dependsOn": "[if(empty(parameters('DependsOn')),json('null'),parameters('DependsOn'))]",
       "properties": "[variables('properties')]"
     }
   },
